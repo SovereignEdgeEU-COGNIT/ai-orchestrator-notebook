@@ -1,7 +1,7 @@
 
 
 from typing import Dict
-from MLModelInterface import MLModelInterface
+from ClassifierInterface import ClassifierInterface
 from enum import Enum
 
 class ModelTypes(Enum):
@@ -32,13 +32,13 @@ class ModelManager:
         else:
             raise ValueError("Invalid model type specified.")
 
-    def predict(self, model_type, data) -> int:
+    def predict(self, model_type, vm_id: int) -> int:
         
-        if model_type not in self.selected_models 
+        if model_type not in self.selected_models:
             raise ValueError("Invalid model type specified")
         if self.selected_models[model_type] is None:
             raise ValueError("No model selected")
         
-        return self.selected_models[model_type].predict(data)
+        return self.selected_models[model_type].predict(vm_id)
         
             
