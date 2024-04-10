@@ -57,6 +57,7 @@ class DLClassifier(ClassifierInterface):
         print(self.Idec_model)
 
         self.Idec_model.eval()
+        print("DLClassifier loaded")
 
     def predict(self, vm_id: int) -> List[float]:
         
@@ -70,7 +71,7 @@ class DLClassifier(ClassifierInterface):
     
     #! The MinMaxScaler doesn't scale the data as expected, it will only scale the VM metrics relative to itself, not the entire dataset
     def __norm_channel(self, data):
-        print("norm_channel shape: ", data.shape)
+        #print("norm_channel shape: ", data.shape)
         n_features = data.shape[2]
 
         nor_data = []
@@ -124,7 +125,7 @@ class DLClassifier(ClassifierInterface):
             cluster_score = out[1]
             features_z = out[2]
             
-        print("Cluster Score: ", cluster_score)
+        #print("Cluster Score: ", cluster_score)
         
         #! These normalization takes 1 value to 0 which might underepresent the actual value
         if self.type == DLClassifierType.IR:

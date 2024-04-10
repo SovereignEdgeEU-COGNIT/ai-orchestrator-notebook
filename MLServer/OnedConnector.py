@@ -5,12 +5,13 @@ from os import environ as env
 
 
 oned_pass = env.get("ONED_PASS")
+oned_addr = env.get("ONED_ADDR")
 
 class OnedConnector:
     def __init__(self):
         if oned_pass is None:
             raise ValueError("ONED_PASS environment variable not set")
-        self.one = pyone.OneServer("https://cognit-lab.sovereignedge.eu/RPC2", session=f"oneadmin:{oned_pass}", https_verify=False, timeout=0)
+        self.one = pyone.OneServer(oned_addr, session=f"oneadmin:{oned_pass}", https_verify=False, timeout=0)
         self.lock = threading.Lock()
 
     #! Lock setup in this code is bad as it easily leads to deadlocks
@@ -40,15 +41,21 @@ class OnedConnector:
             return 0.0
         
     def get_vm_flavor(self, vm_id: int) -> str:
-        """ self.lock.acquire()
+        self.lock.acquire()
         vm = self.one.vm.info(vm_id)
         self.lock.release()
         
-        print(vm.USER_TEMPLATE["LOGO"])
-        return vm.TEMPLATE["FLAVOR"] """
+        if "FLAVOURS" not in vm.USER_TEMPLATE or vm.USER_TEMPLATE["FLAVOURS"] is None:
+            return "unknown"
+        else: 
+            #print(vm.USER_TEMPLATE["FLAVOURS"])
+            return vm.USER_TEMPLATE["FLAVOURS"]
         
-        flavors = ["flavor1", "flavor2", "flavor3", "flavor4", "flavor5"]
-        return flavors[vm_id % len(flavors)]
+        #print(vm.USER_TEMPLATE["LOGO"])
+        #return vm.TEMPLATE["FLAVOURS"]
+        
+        #flavors = ["flavor1", "flavor2", "flavor3", "flavor4", "flavor5"]
+        #return flavors[vm_id % len(flavors)]
         
         
 
@@ -57,3 +64,4 @@ if __name__ == "__main__":
     print(oned.get_host_green_energy(7))
     print(oned.get_host_green_energy(8))
     print(oned.get_host_green_energy(0))
+    oned.get_vm_flavor(1516)

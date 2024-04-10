@@ -18,7 +18,7 @@ def eval_by_silhouette(data, catogories):
 
 
 def norm_channel(data):
-    print("norm_channel shape: ", data.shape)
+    #print("norm_channel shape: ", data.shape)
     n_features = data.shape[2]
 
     nor_data = []

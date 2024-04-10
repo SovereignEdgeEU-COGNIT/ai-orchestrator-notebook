@@ -75,6 +75,30 @@ class DBClient:
                 return [Host(*row) for row in rows]
         finally:
             self.connection_pool.putconn(conn)
+            
+    def fetch_host(self, id: int) -> List[Host]:
+        conn = self.connection_pool.getconn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""SELECT * FROM PROD_HOSTS
+                WHERE HOSTID = %s;
+                """, (str(id),))
+                rows = cur.fetchall()
+                return [Host(*row) for row in rows]
+        finally:
+            self.connection_pool.putconn(conn)
+            
+    def fetch_host_vms(self, host_id: int) -> List[Vm]:
+        conn = self.connection_pool.getconn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("""SELECT * FROM PROD_VMS
+                WHERE HOSTID = %s;
+                """, (str(host_id),))
+                rows = cur.fetchall()
+                return [Vm(*row) for row in rows]
+        finally:
+            self.connection_pool.putconn(conn)
     
     def fetch_vms(self) -> List[Vm]:
         conn = self.connection_pool.getconn()
@@ -90,7 +114,7 @@ class DBClient:
         conn = self.connection_pool.getconn()
         try:
             with conn.cursor() as cur:
-                print(str(id))
+                #print(str(id))
                 cur.execute("""
                 SELECT * FROM PROD_VMS
                 WHERE VMID = %s;
@@ -126,7 +150,7 @@ if __name__ == "__main__":
     try:
         hosts = db_client.fetch_hosts()
         vms = db_client.fetch_vms()
-        latest_metrics = db_client.fetch_latest_metrics("1317", 1, 10)
+        latest_metrics = db_client.fetch_latest_metrics(1317, 1, 10)
         print(hosts)
         #print(vms)
         #print(latest_metrics)

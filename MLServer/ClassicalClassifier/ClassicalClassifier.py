@@ -68,7 +68,7 @@ class ClassicalClassifier(ClassifierInterface):
         res = np.array(res_error)
         index_cluster = res.argmin(axis=0)
         #print(index_cluster)
-        print(res)
+        #print(res)
 
         # feature_list = []
         # for i in range(len(data)):
@@ -92,7 +92,11 @@ class ClassicalClassifier(ClassifierInterface):
         res = res[:,0]
         # Normalize the result to be between 0 and 1
         #! This normalization takes 1 value to 0 which might underepresent the actual value
-        res = (res - np.min(res)) / (np.max(res) - np.min(res))
+        if np.max(res) - np.min(res) == 0:  #! This needs to be adjusted if min == max and min != 0
+            res = np.zeros(3)
+        else:
+            res = (res - np.min(res)) / (np.max(res) - np.min(res))
+       
         
         # if res contains nan, replace it with 0
         res = np.nan_to_num(res)
